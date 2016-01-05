@@ -4,8 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/e-comm.iml" filepath="$PROJECT_DIR$/e-comm.iml" />
       <module fileurl="file://$PROJECT_DIR$/e-comm-grailsPlugins.iml" filepath="$PROJECT_DIR$/e-comm-grailsPlugins.iml" />
-      <module fileurl="file://$PROJECT_DIR$/test-module/test-module.iml" filepath="$PROJECT_DIR$/test-module/test-module.iml" />
-      <module fileurl="file://$PROJECT_DIR$/test-module/test-module-grailsPlugins.iml" filepath="$PROJECT_DIR$/test-module/test-module-grailsPlugins.iml" />
     </modules>
   </component>
 </project>
