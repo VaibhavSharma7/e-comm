@@ -1,37 +1,65 @@
 package com.domain.pack
 
-class User {
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 
-    String firstName;
-    String lastName;
-    String userName;
-    String image;
-    String email
+@EqualsAndHashCode(includes = 'username')
+@ToString(includes = 'username', includeNames = true, includePackage = false)
+class User implements Serializable {
+
+    private static final long serialVersionUID = 1
+
+    transient springSecurityService
+
+    String username
     String password
-    String confirmPassword
-    static  transients=['confirmPassword']
-    String isAdmin
-//    static hasMany = [topics : Topic,subscriptions:Subscription]
+    String firstName
+    String lastName
+    boolean enabled = true
+    boolean accountExpired
+    boolean accountLocked
+    boolean passwordExpired
 
+    User(String username, String password, String firstName,
+         String lastName, boolean enabled, boolean accountExpired,
+         boolean accountLocked, boolean passwordExpired) {
+//		this()
+        this.username = username
+        this.password = password
+        this.firstName = firstName
+        this.lastName = lastName
+        this.enabled = enabled
+        this.accountExpired = accountExpired
+        this.accountLocked = accountLocked
+        this.passwordExpired = passwordExpired
+    }
+
+    Set<Role> getAuthorities() {
+        UserRole.findAllByUser(this)*.role
+    }
+
+    def beforeInsert() {
+        encodePassword()
+    }
+
+    def beforeUpdate() {
+        if (isDirty('password')) {
+            encodePassword()
+        }
+    }
+
+    protected void encodePassword() {
+        password = springSecurityService?.passwordEncoder ? springSecurityService.encodePassword(password) : password
+    }
+
+    static transients = ['springSecurityService']
 
     static constraints = {
-        confirmPassword (bindable:true)
-        image (blank: true,nullable: true)
-        password (blank: false, nullable: false, size:4..10,
-                validator: {password, obj ->
-                    if(obj.confirmPassword != password){
-                        return ["Password do not match"]
-                    }
-                })
-        /*name validator: {
-             if (it.length()<3) return ['entryMissing']
-         }*//*
-       *//*  password validator: {
-             if(!password==confirmPassword) return ['false']
-         }
+        username blank: false, unique: true
+        password blank: false
+    }
 
-      email(email: true, unique: true, blank:false,nullable: false )
-         password(size: 4..15, blank: false)*//*
-     }*/
+    static mapping = {
+        password column: '`password`'
     }
 }

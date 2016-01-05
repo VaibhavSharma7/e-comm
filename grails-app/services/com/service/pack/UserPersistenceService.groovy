@@ -14,7 +14,7 @@ println("UserPersistenceService >> serviceMethod :: start ")
         boolean status = false
         println("UserPersist Service :: User Details :- " + user)
         if (user.save()) {
-            user.save()
+            user.save(flush: true)
             status = true
         }
 /*println user.errors.allErrors*/
